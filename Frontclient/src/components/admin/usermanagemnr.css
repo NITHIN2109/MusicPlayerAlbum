@@ -1,0 +1,220 @@
+.albumcontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+.album-header {
+  width: 99%;
+  margin: 10px;
+}
+.album-header > h1 {
+  display: inline;
+  font-size: 24px;
+  margin-right: 200px;
+}
+
+.overlay {
+  display: flex;
+  margin: 10px 100px 10px 400px;
+  padding: 25px;
+  font-size: 24px;
+
+  border-radius: 25px;
+  box-shadow: 0px 0px 10px rgb(206, 205, 205);
+}
+.content {
+  display: flex;
+  padding: 20px;
+}
+.content > form {
+  display: grid;
+  grid-template-columns: auto auto;
+
+  width: fit-content;
+}
+
+.addalbumform > label {
+  margin: 10px 10px 10px 50px;
+  text-align: right;
+  padding: 5px;
+}
+.addalbumform > input {
+  margin: 10px 25px 5px 25px;
+  width: 300px;
+  height: 30px;
+  font-size: 24px;
+  border: 1px solid black;
+}
+.album-body {
+  padding: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+.btn-submitalbum {
+  width: 150px;
+  height: 40px;
+  font-size: 24px;
+  background-color: black;
+  color: white;
+  border: 2px solid rgb(167, 164, 164);
+}
+
+.btn-addalbum {
+  width: 150px;
+  height: 40px;
+  font-size: 24px;
+  background-color: rgb(88, 234, 105);
+  color: rgb(115, 94, 94);
+  border: 2px solid rgb(0, 0, 0);
+  border-radius: 10px;
+}
+
+.sin {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: larger;
+  margin: 10px 20px 10px 0px;
+}
+
+.sin:hover {
+  background-color: #9bf480;
+}
+.editForm {
+  display: grid;
+  grid-template-columns: auto auto;
+  width: fit-content;
+}
+.editForm > label {
+  width: fit-content;
+  height: 25px;
+  margin: 5px;
+  font-size: 20px;
+}
+.editForm > input {
+  width: 250px;
+  height: 25px;
+  margin: 5px;
+  font-size: 20px;
+}
+.Usermanagement {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.adduser {
+  margin: 25px;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: transparent;
+  padding: 50px;
+  border-radius: 20px;
+}
+.adduser > input {
+  width: 250px;
+  height: 25px;
+  margin: 5px;
+  font-size: 20px;
+}
+.userrole {
+  display: flex;
+  flex-direction: column;
+  font-size: larger;
+}
+.us {
+  width: 150px;
+}
+.bt {
+  width: 100px;
+  font-size: larger;
+  margin: 10px;
+  background-color: azure;
+}
+
+table {
+  width: fit-content;
+  border-collapse: separate;
+
+  margin-top: 15px;
+  gap: 10px;
+}
+
+table th {
+  text-align: center;
+  padding: 10px;
+  background-color: #ffffff;
+  color: black;
+}
+
+table td {
+  padding: 8px;
+}
+
+table tr:hover {
+  background-color: #ff8800;
+}
+.music {
+  width: 100%;
+}
+.playmusic {
+  width: 50px;
+}
+.singlealbumcontainer {
+  display: flex;
+  justify-content: flex-start;
+  gap: 100px;
+  align-items: center;
+
+  width: 80%;
+  height: 91.5vh;
+}
+.image {
+  display: flex;
+}
+.image img {
+  width: 300px;
+  height: 300px;
+}
+
+.albumdetails {
+  display: flex;
+  margin-left: 20px;
+  justify-content: center;
+  gap: 100px;
+}
+
+.edit-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.edit-form input {
+  margin-bottom: 10px;
+}
+
+.song-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.song-list li {
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.song-list li:hover {
+  text-decoration: underline;
+}
+
+button {
+  margin-right: 10px;
+}
+.asong li {
+  list-style: none;
+}
