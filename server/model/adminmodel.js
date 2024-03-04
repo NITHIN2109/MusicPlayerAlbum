@@ -30,22 +30,18 @@ exports.updateUserDetails = (id, updateUserDetails, callback) => {
 
 exports.createuser = (userdeatils, callback) => {
   let { Name, Email, Password, role } = userdeatils;
-
   let query1 = `Select * from users where Email='${Email}'`;
   db.query(query1, (err, result) => {
     if (err) {
       callback(null, err);
       return;
     }
-    // console.log(result);
-
     if (result.length > 0) {
       console.log(result.length);
       callback({ alreadyExists: true }, null);
       return;
     }
     let query = `Insert into users(Name,Email,Password,role) values ("${Name}","${Email}","${Password}","${role}")`;
-
     db.query(query, (err, result) => {
       if (err) {
         console.log(err);
@@ -54,7 +50,6 @@ exports.createuser = (userdeatils, callback) => {
       }
       console.log(result);
       const insertedId = result.insertId;
-      // console.log(insertedId);
       callback(null, insertedId);
       return;
     });
@@ -74,23 +69,22 @@ exports.addAlbum = (
   title,
   genre,
   artist,
-  rating,
+
   releaseYear,
   imageurl,
   cb
 ) => {
   const query =
-    "INSERT INTO albums (title, genre, artist, coverImage, releaseYear, rating) VALUES (?, ?, ?, ?, ?, ?)";
-  const values = [title, genre, artist, imageurl, releaseYear, rating];
+    "INSERT INTO albums (title, genre, artist, coverImage, releaseYear) VALUES (?, ?, ?, ?, ?)";
+  const values = [title, genre, artist, imageurl, releaseYear];
   db.query(query, values, (err, result) => {
     if (err) {
-      cb(err, null); // Pass error and null as album ID
+      cb(err, null);
     } else if (result.affectedRows == 1) {
-      cb(null, result.insertId); // Pass null as error and album ID
+      cb(null, result.insertId);
     }
   });
 };
-// Function to retrieve song duration
 async function getSongDuration(filePath) {
   try {
     const stats = await stat(filePath);
@@ -126,18 +120,16 @@ exports.getsingleAlbum = (id, cb) => {
         : [];
       const song_ids = album.song_ids ? album.song_ids.split(",") : [];
       const songs = [];
-
       for (let i = 0; i < song_filenames.length; i++) {
         const song_filename = song_filenames[i];
         const song_id = song_ids[i];
-        const songInfo = await getSongDuration(`./songs/${song_filename}`);
+        const songInfo = await getSongDuration(`./songs/${song_id}`);
         songs.push({
           song_filename,
           song_id,
           duration: songInfo ? songInfo.duration : null,
         });
       }
-
       album.songs = songs;
       cb(null, [album]);
     } else {
@@ -149,7 +141,7 @@ exports.updatealbum = (updatealbum, id, cb) => {
   let query = `update albums set title=?
   ,genre=?,
   artist=?,
-  rating=?,
+ 
   releaseYear=?
   where id=?`;
   db.query(
@@ -158,7 +150,6 @@ exports.updatealbum = (updatealbum, id, cb) => {
       updatealbum.title,
       updatealbum.genre,
       updatealbum.artist,
-      updatealbum.rating,
       updatealbum.releaseYear,
       id,
     ],
@@ -172,46 +163,60 @@ exports.updatealbum = (updatealbum, id, cb) => {
     }
   );
 };
-
 exports.deletealbum = (id, cb) => {
   let query1 = `SELECT coverImage FROM albums WHERE id=${id}`;
-
   db.query(query1, (err, result) => {
     if (err) {
-      console.log(err, 1);
       return cb(err, null);
     }
-
     if (result.length === 0) {
       return cb("Album not found", null);
     }
-
     let imagepath = result[0].coverImage;
     let filePath = path.join(__dirname, `../uploads/${imagepath}`);
-
     fs.unlink(filePath, (err) => {
       if (err) {
         return cb(err, null);
       }
 
-      let query2 = `DELETE FROM albums WHERE id=${id}`;
-
-      db.query(query2, (err, res) => {
+      let query2 = `SELECT  song_id FROM songs WHERE album_id=${id}`;
+      db.query(query2, (err, songs) => {
         if (err) {
           console.log(err);
           return cb(err, null);
         }
+        songs.forEach((song) => {
+          let songFilePath = path.join(__dirname, `../songs/${song.song_id}`);
+          fs.unlink(songFilePath, (err) => {
+            if (err) {
+              console.log(err);
+            }
+          });
+        });
 
-        if (res.affectedRows === 0) {
-          return cb("Failed to delete the album", null);
-        }
+        let query3 = `DELETE FROM songs WHERE album_id=${id}`;
+        db.query(query3, (err, res) => {
+          if (err) {
+            console.log(err);
+            return cb(err, null);
+          }
 
-        cb(null, res);
+          let query4 = `DELETE FROM albums WHERE id=${id}`;
+          db.query(query4, (err, res) => {
+            if (err) {
+              console.log(err);
+              return cb(err, null);
+            }
+            if (res.affectedRows === 0) {
+              return cb("Failed to delete the album", null);
+            }
+            cb(null, res);
+          });
+        });
       });
     });
   });
 };
-// Model (addsong function for interacting with the database)
 exports.addSong = (songDetails, cb) => {
   const query =
     "INSERT INTO songs ( song_id,album_id,song_name) VALUES (?, ?,?)";
@@ -220,11 +225,16 @@ exports.addSong = (songDetails, cb) => {
     songDetails.album_id,
     songDetails.song_name,
   ];
-  db.query(query, values, (err, result) => {
+  db.query(query, values, async (err, result) => {
+    const songInfo = await getSongDuration(`./songs/${songDetails.song_id}`);
     if (err) {
-      cb(err);
+      cb(err, null);
     } else if (result.affectedRows == 1) {
-      cb(null);
+      cb(null, {
+        song_filename: songDetails.song_name,
+        song_id: songDetails.song_id,
+        duration: songInfo.duration,
+      });
     }
   });
 };
@@ -234,7 +244,6 @@ exports.deleteSongById = (songId, callback) => {
     if (err) {
       return callback(err, null);
     }
-
     db.query("DELETE FROM songs WHERE song_id = ?", [songId], (err, result) => {
       if (err) {
         return callback(err, null);

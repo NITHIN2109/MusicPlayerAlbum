@@ -6,6 +6,7 @@ export const AlbumContext = createContext();
 
 export const AlbumProvider = ({ children }) => {
   const [albums, setAlbums] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { isLoggedIn } = useAuth();
 
   useEffect(() => {
@@ -14,13 +15,17 @@ export const AlbumProvider = ({ children }) => {
         .get("http://localhost:8080/albums")
         .then((response) => {
           setAlbums(response.data);
-          console.log(response.data);
+          setLoading(false);
         })
         .catch((error) => {
           console.error("Error fetching album data:", error);
+          setLoading(false);
         });
+    } else {
+      setLoading(false);
     }
   }, [isLoggedIn]);
+
   const refreshAlbums = () => {
     axios
       .get("http://localhost:8080/albums", { withCredentials: true })
@@ -31,6 +36,11 @@ export const AlbumProvider = ({ children }) => {
         console.error("Error refreshing album data:", error);
       });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <AlbumContext.Provider value={{ albums, refreshAlbums }}>
       {children}

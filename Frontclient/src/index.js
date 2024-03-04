@@ -6,13 +6,16 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { AuthContextProvider } from "./contexts/authcontext";
 import { AlbumProvider } from "./contexts/alubmscontext";
+import { SongProvider } from "./contexts/SongPlayContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>
   <BrowserRouter>
     <AuthContextProvider>
       <AlbumProvider>
-        <App />
+        <SongProvider>
+          <App />
+        </SongProvider>
       </AlbumProvider>
     </AuthContextProvider>
   </BrowserRouter>

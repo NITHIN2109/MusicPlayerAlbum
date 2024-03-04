@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import "./home.css";
 import axios from "axios";
 function Signup() {
   const [signUpData, setsignUpData] = useState({
@@ -32,10 +33,10 @@ function Signup() {
   };
 
   return (
-    <div className="SignUp signup-container">
-      <div>
-        <h1> Signup </h1>
+    <div className="SignUp">
+      <div className="signup-container">
         <form onSubmit={hanldeSubmit} className="signupform">
+          <h1> Signup </h1>
           <label htmlFor="signupFullname">Full Name</label>
           <br />
           <input
@@ -64,7 +65,6 @@ function Signup() {
             }
           />
           <br />
-
           <label htmlFor="loginPassword ">Password</label>
           <br />
           <input
@@ -79,8 +79,23 @@ function Signup() {
             }
           />
           <br></br>
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          &nbsp;
           <button type="submit" className="btn-login">
             Sign Up
+          </button>
+          <button type="submit" className="btn-login">
+            <Link to="/login" className="login-signup">
+              Login
+            </Link>
+          </button>
+          <br></br>
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          &nbsp;
+          <button className="btn-login">
+            <Link to="/home" className="login-signup">
+              Return to home
+            </Link>
           </button>
         </form>
       </div>

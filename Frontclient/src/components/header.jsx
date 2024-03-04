@@ -1,71 +1,100 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/authcontext";
-
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { useSongContext } from "../contexts/SongPlayContext";
 function Header() {
   const { isLoggedIn, logout, isAdmin } = useAuth();
+  const { cleardata } = useSongContext();
   return (
     <header className="nav-bar">
       {isLoggedIn ? (
         <>
           <ul className="header-ul">
-            <li>
-              <Link to="/Home" className="btn-home">
-                Home
-              </Link>
-            </li>
-
             {isAdmin ? (
               <>
                 <li>
-                  <Link to="/dashboard/usermanagement" className="btn-home">
+                  <NavLink
+                    to="/dashboard/home"
+                    className={({ isActive }) =>
+                      isActive ? "btn-home  Active" : "btn-home"
+                    }
+                  >
+                    <span style={{ verticalAlign: "middle", margin: "0px" }}>
+                      <HomeOutlinedIcon />
+                    </span>
+                    <span> Home</span>
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/dashboard/user"
+                    className={({ isActive }) =>
+                      isActive ? "btn-home  Active" : "btn-home"
+                    }
+                  >
                     Users
-                  </Link>
+                  </NavLink>
                 </li>
                 <li>
-                  <Link to="/dashboard/albumManagement" className="btn-home">
+                  <NavLink
+                    to="/dashboard/albums"
+                    className={({ isActive }) =>
+                      isActive ? "btn-home  Active" : "btn-home"
+                    }
+                  >
                     Albums
-                  </Link>
+                  </NavLink>
                 </li>
               </>
             ) : (
-              <li>
-                <Link to="/dashboard" className="btn-home">
-                  Albums
-                </Link>
-              </li>
+              <>
+                <li>
+                  <NavLink
+                    to="/dashboard"
+                    className={({ isActive }) =>
+                      isActive ? "btn-home  Active" : "btn-home"
+                    }
+                  >
+                    <span style={{ verticalAlign: "middle", margin: "0px" }}>
+                      <HomeOutlinedIcon />
+                    </span>
+                    <span> Home</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/search"
+                    className={({ isActive }) =>
+                      isActive ? "btn-home  Active" : "btn-home"
+                    }
+                  >
+                    {" "}
+                    <span style={{ verticalAlign: "middle", margin: "0px" }}>
+                      <SearchOutlinedIcon />
+                    </span>
+                    <span> Search</span>
+                  </NavLink>
+                </li>
+              </>
             )}
           </ul>
 
           <div className="text-end">
-            <button className="btnh" onClick={(e) => logout(e)}>
+            <button
+              className="btnh"
+              onClick={(e) => {
+                cleardata();
+                logout(e);
+              }}
+            >
               <p className="btn btn-Logout">LogOut</p>
             </button>
           </div>
         </>
-      ) : (
-        <>
-          <ul className="header-ul">
-            <li>
-              <Link to="/Home" className="btn-home">
-                Home
-              </Link>
-            </li>
-          </ul>
-          <div className="text-end">
-            <button type="button" className="btnh">
-              <Link to="/Login" className="btn btn-Login">
-                Login
-              </Link>
-            </button>
-            <button className="btnh">
-              <Link to="/SignUp" className="btn btn-signUp">
-                Sign-up
-              </Link>
-            </button>
-          </div>
-        </>
-      )}
+      ) : null}
     </header>
   );
 }

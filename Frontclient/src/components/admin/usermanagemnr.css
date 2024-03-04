@@ -13,24 +13,37 @@
   font-size: 24px;
   margin-right: 200px;
 }
-
 .overlay {
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 50%;
+  background-image: url("../backgroungdimages/addalbum.jpg");
+  background-size: cover;
   display: flex;
-  margin: 10px 100px 10px 400px;
-  padding: 25px;
+  justify-content: center;
+  align-items: center;
   font-size: 24px;
-
-  border-radius: 25px;
-  box-shadow: 0px 0px 10px rgb(206, 205, 205);
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: right 5s ease-in;
 }
+.overlay.active {
+  opacity: 1; /* Set the desired opacity */
+}
+
 .content {
-  display: flex;
+  color: rgb(255, 255, 255);
+  background-color: rgba(0, 0, 0, 0.405);
   padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgb(255, 255, 255); /* Shadow effect */
 }
 .content > form {
   display: grid;
   grid-template-columns: auto auto;
-
   width: fit-content;
 }
 
@@ -47,25 +60,38 @@
   border: 1px solid black;
 }
 .album-body {
-  padding: 50px;
+  padding: 0px;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  flex-direction: row;
 }
 .btn-submitalbum {
+  display: inline-block;
   width: 150px;
   height: 40px;
   font-size: 24px;
-  background-color: black;
+  background-color: rgb(0, 0, 0, 0.7);
   color: white;
   border: 2px solid rgb(167, 164, 164);
 }
-
+.btn-closealbum {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding-top: 6px;
+  height: 40px;
+  font-size: 24px;
+  background-color: rgb(254, 255, 254);
+  color: rgb(0, 0, 0);
+  border: 2px solid rgb(167, 164, 164);
+  border-radius: 50%;
+}
 .btn-addalbum {
   width: 150px;
   height: 40px;
   font-size: 24px;
-  background-color: rgb(88, 234, 105);
+
   color: rgb(115, 94, 94);
   border: 2px solid rgb(0, 0, 0);
   border-radius: 10px;
@@ -80,9 +106,9 @@
   font-size: larger;
   margin: 10px 20px 10px 0px;
 }
-
 .sin:hover {
-  background-color: #9bf480;
+  background-color: orange;
+  color: white;
 }
 .editForm {
   display: grid;
@@ -102,61 +128,93 @@
   font-size: 20px;
 }
 .Usermanagement {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.delete-button {
+  cursor: pointer;
+  border: none;
+  background-color: rgb(0, 255, 4);
+  padding: 5px;
+  color: #000000;
+  font-weight: bold;
+  font-size: medium;
+}
+.update-button {
+  cursor: pointer;
+  border: none;
+  background-color: rgb(0, 255, 4);
+  padding: 5px;
+  color: #000000;
+  font-weight: bold;
+  font-size: medium;
+}
+.adduser {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 50px 20px 50px 20px;
 }
-.adduser {
-  margin: 25px;
-  width: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: transparent;
-  padding: 50px;
-  border-radius: 20px;
+.adduser > form {
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0px 0px 10px rgb(255, 255, 255);
+}
+.addUserBtn {
+  position: absolute;
+  top: 50px;
+  right: 280px;
+  padding: 10px;
+}
+.adduserButton {
+  font-size: 20px;
 }
 .adduser > input {
   width: 250px;
   height: 25px;
-  margin: 5px;
+  margin: 10px;
   font-size: 20px;
-}
-.userrole {
-  display: flex;
-  flex-direction: column;
-  font-size: larger;
 }
 .us {
   width: 150px;
 }
 .bt {
-  width: 100px;
+  width: fit-content;
   font-size: larger;
   margin: 10px;
   background-color: azure;
+  cursor: pointer;
+}
+.UserList {
+  margin-left: 20px;
+  width: 45%;
 }
 
-table {
+.userTable {
   width: fit-content;
   border-collapse: separate;
-
   margin-top: 15px;
   gap: 10px;
+  width: 100%;
+  font-size: larger;
+  font-weight: 500;
 }
 
-table th {
+.userTable th {
   text-align: center;
   padding: 10px;
   background-color: #ffffff;
   color: black;
 }
 
-table td {
+.userTable td {
   padding: 8px;
 }
 
-table tr:hover {
+.userTable tr:hover {
+  /* border-collapse: collapse; */
   background-color: #ff8800;
 }
 .music {
@@ -165,15 +223,7 @@ table tr:hover {
 .playmusic {
   width: 50px;
 }
-.singlealbumcontainer {
-  display: flex;
-  justify-content: flex-start;
-  gap: 100px;
-  align-items: center;
 
-  width: 80%;
-  height: 91.5vh;
-}
 .image {
   display: flex;
 }
@@ -181,14 +231,32 @@ table tr:hover {
   width: 300px;
   height: 300px;
 }
-
-.albumdetails {
-  display: flex;
-  margin-left: 20px;
-  justify-content: center;
-  gap: 100px;
+.image > img {
+  border-radius: 20px;
+  border: 5px solid black;
 }
+.albumdetails {
+  /* border: 5px solid orange; */
+  /* display: flex; */
+  margin: 20px;
 
+  width: 95%;
+  position: relative;
+  /* gap: 100px; */
+}
+.album-left {
+  margin: 0px;
+  padding: 0px;
+  width: 40%;
+  position: absolute;
+  /* border: 1px solid white; */
+}
+.album-left > h1 {
+  margin: 0px;
+}
+.album-left > h3 {
+  margin: 5px;
+}
 .edit-form label {
   display: block;
   margin-bottom: 5px;
@@ -197,7 +265,52 @@ table tr:hover {
 .edit-form input {
   margin-bottom: 10px;
 }
-
+.editbtn {
+  width: 100px;
+  margin: 5px 10px 10px 120px;
+  cursor: pointer;
+  color: rgb(0, 0, 0);
+  font-size: 24px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(0, 255, 0);
+}
+.album-right {
+  margin-left: 100px;
+  position: absolute;
+  width: 60%;
+  top: 0px;
+  right: 0px;
+  /* border: 1px solid rgb(255, 255, 255); */
+}
+.addsong {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  height: 110px;
+  background: transparent;
+  box-shadow: 1px -1px 10px black;
+  border-radius: 10px;
+  text-align: justify;
+  border: 1px solid black;
+}
+.addsong > h4 {
+  height: 10px;
+  text-align: justify;
+}
+.addsong > form {
+  margin: 5px 0px 5px 100px;
+}
+.addsong > form > input[type] .addsongbtn {
+  padding: 1px;
+  font-size: 20px;
+  margin: 10px 0px 10px 50px;
+}
+.addsongbtn {
+  margin: 5px 5px 5px 50px;
+}
 .song-list ul {
   list-style-type: none;
   padding: 0;
@@ -212,9 +325,64 @@ table tr:hover {
   text-decoration: underline;
 }
 
-button {
+/* button {
   margin-right: 10px;
-}
+} */
 .asong li {
   list-style: none;
+}
+.songTable {
+  box-shadow: 1px -1px 10px black;
+  border-radius: 10px;
+  border-collapse: separate;
+  border-spacing: 0px 10px;
+  padding: 10px;
+  border: 1px solid black;
+  width: 100%;
+  font-size: larger;
+}
+
+.songTable > .thead {
+  background-color: #ff8800;
+  border-radius: 5px;
+}
+
+.songTable > thead > tr {
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.songTable > thead > tr > th {
+  padding: 5px;
+  font-size: 18px;
+}
+
+.indexa,
+.duration_a {
+  width: 10%;
+  text-align: center;
+}
+
+.song_title {
+  width: 50%;
+}
+
+.action-btn {
+  width: 20%;
+  text-align: center;
+  margin-left: 10px;
+}
+
+.action-btnh {
+  width: 50%;
+  margin: 0px 0px;
+  color: white;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font-size: 28px;
+  /* border: 1px solid white; */
+}
+.action-btnh:hover {
+  color: rgb(0, 255, 0);
 }
