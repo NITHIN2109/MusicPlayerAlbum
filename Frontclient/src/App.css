@@ -1,35 +1,72 @@
 .App {
+  position: relative;
+}
+button {
+  cursor: pointer;
+}
+header {
+  box-shadow: 0px 0px 20px rgb(0, 0, 0);
+  position: absolute;
+  width: 15%;
+  height: 79vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
+  border: 5px solid black;
+  /* justify-content: baseline; */
+  border-radius: 15px;
+  margin: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
-header {
-  /* background-color: rgb(249, 243, 243); */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  box-shadow: 5px -1px 10px black;
+.main_Container {
+  box-shadow: 0px 0px 10px black;
+  position: absolute;
+  width: 80%;
+  height: 74vh;
+  top: 0%;
+  right: 0%;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  margin: 5px;
+  padding: 20px;
+  border: 5px solid black;
+  overflow: auto;
 }
-
 .header-ul {
+  width: 100%;
+  /* height: 100%; */
+  /* background-color: gray; */
+  border-radius: 10px;
+  margin: 0px;
+  /* border: 1px solid white;s */
   list-style: none;
   cursor: pointer;
   display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
+  flex-direction: column;
+  align-items: flex-start;
 }
-
+.header-ul > li {
+  margin: 10px 0px 10px 0px;
+}
 .text-end {
+  /* left: 100%; */
+  position: fixed;
+  top: 5px;
+  right: 10px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
+  text-align: start;
+  flex-direction: row;
+  z-index: 2;
+  box-shadow: 1px -1px 10px black;
+  /* background-color: gray; */
+  border-radius: 10px;
+  margin: 5px 5px 5px 35px;
+  /* width: 117%; */
 }
 
 .btnh {
+  text-align: start;
   width: 100px;
   font-size: 18px;
   padding: 10px 15px 10px 15px;
@@ -42,40 +79,51 @@ header {
   text-decoration: none;
 }
 .btn:hover {
-  color: orange;
+  color: rgb(4, 249, 45);
 }
 .btnh:hover {
   width: 100px;
   font-size: 18px;
-  /* width: 100%; */
-
-  color: rgb(255, 145, 0);
+  color: rgb(4, 249, 45);
   cursor: pointer;
 }
 .btn-Logout {
+  /* border: 1px solid beige; */
   display: inline;
 }
+
 .btn-home {
+  text-align: center;
   text-decoration: none;
   width: 100%;
-  font-size: 18px;
+  font-size: 22px;
   color: white;
   margin: 10px;
+  /* border: 1px solid white; */
+}
+.Active {
+  color: orange;
 }
 .btn-home:hover {
-  color: rgb(249, 151, 4);
+  color: rgb(4, 249, 45);
 }
 .btnh:hover {
-  color: rgb(249, 151, 4);
+  color: rgb(4, 249, 45);
 }
 
 .login,
 .SignUp {
+  background-image: url("https://cdn.pixabay.com/photo/2023/02/16/03/43/music-player-7792956_640.jpg");
+  background-color: rgb(0, 0, 0);
+  width: 100%;
+  height: 100vh;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  margin-top: 100px;
-  flex-direction: column;
+  flex-direction: row;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* background-color: gray; */
 }
 .lin {
   text-align: left;
@@ -91,31 +139,36 @@ header {
   font-size: 20px;
 }
 .album-list {
+  padding: 0px;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
-  margin: 20px;
+  flex-direction: row;
+  /* margin: 20px; */
 }
 .album-container {
+  border: 10px solid black;
+  width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
-  margin: 20px;
+  justify-content: space-evenly;
 }
 
 .album-card {
-  width: 250px;
+  width: 225px;
   margin: 15px;
   padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  text-align: center;
+  border-radius: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: rgb(17, 17, 17, 0.3);
+  border: 5px solid black;
 }
 
 .album-card img {
   width: 100%;
-  height: auto;
+  height: 300px;
   border-radius: 8px;
 }
 
@@ -137,10 +190,8 @@ a {
   color: white;
 }
 .album-details-container {
-  /* border: 1px solid white; */
   display: flex;
   justify-content: center;
-  width: 100%;
   padding: 20px;
 }
 
@@ -149,15 +200,16 @@ a {
   display: flex;
   justify-content: space-evenly;
   align-items: flex-start;
+  flex-direction: column;
   gap: 40px;
 }
 
 .album-details-left {
+  padding: 20px;
   display: flex;
   justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 90vh;
+  align-items: flex-end;
+  flex-direction: row;
 }
 
 .album-details-right {
@@ -166,35 +218,64 @@ a {
 }
 
 .album-cover {
-  width: 300px;
-  height: 300px;
+  border-radius: 15px;
+  width: 330px;
+  height: 250px;
+  margin: 0px;
 }
 .main-heading {
   width: 100%;
-  text-align: center;
+  text-align: start;
   font-size: 45px;
-  margin: 10px;
 }
 .sub-heading {
   width: 100%;
-  text-align: center;
+  text-align: start;
+  margin-left: 20px;
+  margin-bottom: 0px;
+  padding: 0px;
+  /* border: 1px solid white; */
 }
-.sub {
-  text-align: center;
-  margin: 10px 40px 10px 40px;
-  font-style: italic;
-  display: inline-block;
+.genre {
+  display: block;
+  margin: 0px;
 }
+.genre > h3 {
+  margin: 0px;
+}
+.tsongs {
+  display: inline;
+}
+.tsongs::before {
+  content: "•";
+  margin-right: 5px;
+}
+
 .songs-list table {
+  position: relative;
   color: black;
-  width: 100%;
+  width: 100vb;
   border: none;
+  margin-left: 100px;
+  border-collapse: collapse;
+  overflow-y: auto;
+}
+
+.duration {
+  width: 180px;
+  text-align: center;
+}
+.duration svg {
+  width: 100%;
+}
+.Action {
+  width: 150px;
 }
 
 .songs-list th,
 .songs-list td {
   border: none;
-  padding: 8px;
+  padding: 5px;
 }
 
 .songs-list th {
@@ -205,47 +286,44 @@ a {
 .songs-list td {
   border-collapse: separate;
   color: white;
-  cursor: pointer;
+  cursor: default;
 }
 .songs-list tr {
-  box-shadow: 5px -1px 10px black;
-
   border-bottom: 20px solid;
-  border-radius: 10px;
   border-color: transparent;
+}
+.songs-list tr:hover {
+  background-color: rgb(0, 255, 0, 0.5);
+}
+.main_Container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main_Container::-webkit-scrollbar-track {
+  background: transparent;
+  height: 100vh;
+}
+
+.main_Container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+.PlayAction {
+  background-color: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.PlayAction > svg {
+  font-size: 24px;
+
+  margin: 0px;
 }
 .back-button {
   margin-top: 20px;
-  position: absolute;
-  top: 0px;
-  right: 0px;
-}
-
-.currently-playing {
-  position: relative;
-  color: rgb(0, 0, 0);
   position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #26ff00;
-  padding: 25px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.currently-playing button {
-  margin-left: 10px;
-}
-.stop {
-  font-weight: bold;
-
-  font-size: 15px;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 0px;
+  left: 16.5%;
+  font-size: 24px;
+  padding: 0px;
 }

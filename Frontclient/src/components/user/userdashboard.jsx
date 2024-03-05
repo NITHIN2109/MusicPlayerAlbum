@@ -1,33 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import AlbumList from "./AlbumList";
-import AlbumDetails from "./AlbumDetails";
 import { useAlbum } from "../../contexts/alubmscontext";
+import { useNavigate } from "react-router";
 
 function UserDashboard() {
+  const navigate = useNavigate();
   const { albums } = useAlbum();
-  const [selectedAlbumId, setSelectedAlbumId] = useState(null);
 
   const handleAlbumClick = (album) => {
-    setSelectedAlbumId(album.id);
-  };
-
-  const handleBackToList = () => {
-    setSelectedAlbumId(null); // Reset selected albumId state
+    navigate(`/Album/${album.id}`);
   };
 
   return (
-    <>
-      {selectedAlbumId ? (
-        <AlbumDetails
-          albumId={selectedAlbumId}
-          onBackToList={handleBackToList}
-        />
-      ) : (
-        <div className="album-list-container">
-          <AlbumList albums={albums} onAlbumClick={handleAlbumClick} />
-        </div>
-      )}
-    </>
+    <div className="main_Container">
+      <div className="album-list-container">
+        <AlbumList albums={albums} onAlbumClick={handleAlbumClick} />
+      </div>
+    </div>
   );
 }
 

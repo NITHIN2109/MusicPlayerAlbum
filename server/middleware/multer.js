@@ -35,7 +35,7 @@ const fileFilter = (req, file, cb) => {
     }
   } else if (file.fieldname === "song") {
     if (file.mimetype === "audio/mpeg" || file.mimetype === "audio/wav") {
-      cb(null, true); // Accept only MP3 and WAV files for songs
+      cb(null, true);
     } else {
       cb(new Error("Invalid file type for song"), false);
     }

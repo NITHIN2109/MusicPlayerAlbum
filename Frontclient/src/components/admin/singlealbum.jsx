@@ -3,11 +3,14 @@ import { useParams } from "react-router";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { useAlbum } from "../../contexts/alubmscontext";
-
+import { useSongContext } from "../../contexts/SongPlayContext";
+import { FaPlay, FaPause } from "react-icons/fa";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import { MdDelete } from "react-icons/md";
 function SingleAlbum() {
   const navigate = useNavigate();
   const { albumId } = useParams();
-  const [album, setAlbum] = useState();
+
   const [isEdit, setIsEdit] = useState(false);
   const { refreshAlbums } = useAlbum();
   const [editedFields, setEditedFields] = useState({
@@ -17,6 +20,20 @@ function SingleAlbum() {
     releaseYear: "",
     rating: "",
   });
+  const [songData, setSongData] = useState([]);
+  const [addSong, setAddsong] = useState(null);
+  const [album, setalbums] = useState();
+  const {
+    playSong,
+    // updateAlbumId,
+
+    addsong,
+    updatealbums,
+    isPlaying,
+    currentSongId,
+    pauseSong,
+    deletesong,
+  } = useSongContext();
   const formatDuration = (durationInSeconds) => {
     const minutes = Math.floor(durationInSeconds / 60);
     const seconds = Math.floor(durationInSeconds % 60);
@@ -27,11 +44,11 @@ function SingleAlbum() {
   const handleEditClick = () => {
     setIsEdit(true);
     setEditedFields({
-      title: album[0].title,
-      artist: album[0].artist,
-      genre: album[0].genre,
-      releaseYear: album[0].releaseYear,
-      rating: album[0].rating,
+      title: album.title,
+      artist: album.artist,
+      genre: album.genre,
+      releaseYear: album.releaseYear,
+      rating: album.rating,
     });
   };
 
@@ -42,6 +59,7 @@ function SingleAlbum() {
       })
       .then((res) => {
         alert("Updated successfully");
+        setalbums({ ...album, ...editedFields });
       })
       .catch((err) => {
         console.error(err);
@@ -66,7 +84,7 @@ function SingleAlbum() {
       .then((response) => {
         if (response.status === 200) {
           alert("Delete Successfully");
-          navigate("/dashboard/albumManagement");
+          navigate("/dashboard/albums");
           refreshAlbums();
         } else {
           alert("Failed to delete the album");
@@ -78,12 +96,10 @@ function SingleAlbum() {
       });
   };
 
-  const handlePlaySong = (songName) => {
-    const audioPlayer = document.getElementById("audioPlayer");
-    audioPlayer.src = `http://localhost:8080/songs/${songName}`;
-    audioPlayer.play();
-  };
-
+  // const handlePlaySong = (songName) => {
+  //   // Call the playSong function from the context with the appropriate songName
+  //   playSong(songName);
+  // };
   const handleDeleteSong = (songId) => {
     axios
       .delete(`http://localhost:8080/songs/${songId}`, {
@@ -92,17 +108,11 @@ function SingleAlbum() {
       .then((response) => {
         if (response.status === 200) {
           alert("Song deleted successfully");
-          console.log(album);
-          setAlbum((prevAlbum) => {
-            const updatedAlbum = [...prevAlbum]; // Create a copy of the array
-            updatedAlbum[0] = {
-              ...updatedAlbum[0],
-              songs: updatedAlbum[0].songs.filter(
-                (song) => song.song_id !== songId
-              ),
-            };
-            return updatedAlbum;
-          });
+          setalbums((prevAlbum) => ({
+            ...prevAlbum,
+            songs: prevAlbum.songs.filter((song) => song.song_id !== songId),
+          }));
+          deletesong(songId);
         } else {
           alert("Failed to delete the song");
         }
@@ -113,122 +123,192 @@ function SingleAlbum() {
       });
   };
 
+  const handleAddsong = (e) => {
+    e.preventDefault();
+    const newSongData = new FormData();
+    for (let i = 0; i < songData.songs.length; i++) {
+      newSongData.append("song", songData.songs[i]);
+    }
+    axios
+      .post(`http://localhost:8080/album/${albumId}`, newSongData, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        alert(res.data.message);
+        addsong(res.data.songDetails);
+        setalbums((prevAlbum) => ({
+          ...prevAlbum,
+          songs: [...prevAlbum.songs, res.data.songDetails],
+        }));
+      })
+      .catch((error) => {
+        console.error(error);
+        alert("Error adding song to the album");
+      });
+  };
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/album/${albumId}`, { withCredentials: true })
-      .then((res) => {
-        setAlbum(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Error fetching album");
-      });
-  }, [albumId, isEdit]);
+      .get(`http://localhost:8080/album/${albumId}`)
+      .then((response) => {
+        // console.log(response);
 
+        setalbums(response.data[0]);
+        // console.log(response.data[0]);
+        // updateAlbumId(response.data[0].id);
+        updatealbums(response.data);
+        // setLoading(false);
+        // console.log(loading);
+        // updatealbums(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        // setLoading(true);
+      });
+  }, []);
+  // useEffect(() => {
+  //   setSongDetails(album.songs);
+  // }, [albumId]);
   if (!album) {
     return <p>Waiting for data to load...</p>;
   }
 
   return (
-    <div className="singlealbumcontainer">
-      <div className="image">
-        <img
-          src={`http://localhost:8080/uploads/${album[0].coverImage}`}
-          alt="Album Cover"
-        />
-      </div>
-      <div className="albumdetails">
-        {isEdit ? (
-          <div className="editForm">
-            <label>Title:</label>
-            <input
-              type="text"
-              value={editedFields.title}
-              onChange={(e) => handleFieldChange("title", e.target.value)}
-            />
-            <label>Artist:</label>
-            <input
-              type="text"
-              value={editedFields.artist}
-              onChange={(e) => handleFieldChange("artist", e.target.value)}
-            />
-            <label>Genre:</label>
-            <input
-              type="text"
-              value={editedFields.genre}
-              onChange={(e) => handleFieldChange("genre", e.target.value)}
-            />
-            <label>Release Year:</label>
-            <input
-              type="text"
-              value={editedFields.releaseYear}
-              onChange={(e) => handleFieldChange("releaseYear", e.target.value)}
-            />
-            <label>Rating:</label>
-            <input
-              type="text"
-              value={editedFields.rating}
-              onChange={(e) => handleFieldChange("rating", e.target.value)}
-            />
-            <button onClick={handleUpdateClick}>Update</button>
-          </div>
-        ) : (
-          <>
-            <div>
-              <h1>{album[0].title}</h1>
-              <h2>Artist: {album[0].artist}</h2>
-              <h2>Genre: {album[0].genre}</h2>
-              <h2>Release Year: {album[0].releaseYear}</h2>
-              <h2>Rating: {album[0].rating}</h2>
+    <div className="albumdetails">
+      {/* {console.log(album)} */}
+      <div className="album-left">
+        <div className="image">
+          {/* {console.log(album)} */}
+          <img
+            src={`http://localhost:8080/uploads/${album.coverImage}`}
+            alt="Album Cover"
+          />
+        </div>
 
-              <span>
-                <button onClick={handleEditClick}>Edit</button>
-                <button onClick={() => handleDelete(albumId)}>Delete</button>
-              </span>
+        {isEdit ? (
+          <>
+            <div className="editForm">
+              <label>Title:</label>
+              <input
+                type="text"
+                value={editedFields.title}
+                onChange={(e) => handleFieldChange("title", e.target.value)}
+              />
+              <label>Artist:</label>
+              <input
+                type="text"
+                value={editedFields.artist}
+                onChange={(e) => handleFieldChange("artist", e.target.value)}
+              />
+              <label>Genre:</label>
+              <input
+                type="text"
+                value={editedFields.genre}
+                onChange={(e) => handleFieldChange("genre", e.target.value)}
+              />
+              <label>Release Year:</label>
+              <input
+                type="text"
+                value={editedFields.releaseYear}
+                onChange={(e) =>
+                  handleFieldChange("releaseYear", e.target.value)
+                }
+              />
             </div>
             <div>
-              <p>
-                <audio id="audioPlayer" src="" controls />
-              </p>
-              <h3>Songs:</h3>
-              <table className="thead">
-                <thead>
-                  <tr>
-                    <th>Sl. No</th>
-                    <th>Song Name</th>
-                    <th>Duration</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {album[0].songs ? (
-                    album[0].songs.map((song, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{song.song_filename}</td>
-                        <td>{formatDuration(song.duration)}</td>
-                        <td>
-                          <button onClick={() => handlePlaySong(song.song_id)}>
-                            Play
-                          </button>
-                          <button
-                            onClick={() => handleDeleteSong(song.song_id)}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="4">No songs available for this album.</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+              <button onClick={handleUpdateClick} className="editbtn">
+                Update
+              </button>
             </div>
           </>
+        ) : (
+          <>
+            <h1>{album.title}</h1>
+            <h3>Artist: {album.artist}</h3>
+            <h3>Genre: {album.genre}</h3>
+            <h3>Release Year: {album.releaseYear}</h3>
+            <span>
+              <button onClick={handleEditClick}>Edit</button>
+              <button onClick={() => handleDelete(albumId)}>Delete</button>
+            </span>
+          </>
         )}
+      </div>
+      <div className="album-right">
+        <div className="addsong">
+          <h4>Add New Song</h4>{" "}
+          <form>
+            <input
+              type="file"
+              accept="mp3"
+              multiple
+              name="songs"
+              onChange={(e) =>
+                setSongData({ ...songData, songs: e.target.files })
+              }
+            />
+            <br />
+            <button onClick={handleAddsong} className="addsongbtn">
+              Submit
+            </button>
+          </form>
+        </div>
+        <h3>Songs:</h3>
+        <table className="songTable">
+          <thead className="thead">
+            <tr>
+              <td className="indexa">#</td>
+              <td className="song_title">Song Name</td>
+              <td className=" duration_a">
+                <AccessTimeOutlinedIcon />
+              </td>
+              <td className="action-btn">Play</td>
+              <td className="action-btn">Delete</td>
+            </tr>
+          </thead>
+          <tbody>
+            {album.songs ? (
+              album.songs.map((song, index) => (
+                <tr key={index}>
+                  <td className="indexa">{index + 1}</td>
+                  <td className="song_title">{song.song_filename}</td>
+                  <td className="duration_a">
+                    {formatDuration(song.duration)}
+                  </td>
+                  <td className="action-btn">
+                    <button
+                      onClick={() => {
+                        if (isPlaying && currentSongId === song.song_id) {
+                          pauseSong();
+                        } else {
+                          playSong(index);
+                        }
+                      }}
+                      className="action-btnh"
+                    >
+                      {isPlaying && currentSongId === song.song_id ? (
+                        <FaPause />
+                      ) : (
+                        <FaPlay />
+                      )}
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => handleDeleteSong(song.song_id)}
+                      className="action-btnh"
+                    >
+                      <MdDelete />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4">No songs available for this album.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ export const AuthContextProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [Username, setUsername] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,10 +23,11 @@ export const AuthContextProvider = ({ children }) => {
           setIsAdmin(res.data.isadmin);
           setUsername(res.data.name);
         } else {
-          setIsLoggedIn(false);
+          setUsername(false);
         }
       } catch (error) {
         console.log(error);
+        // setIsDataLoaded(true);
         // alert(error.response?.data?.message || "Error fetching data");
         navigate("/Home");
       } finally {
@@ -34,7 +36,7 @@ export const AuthContextProvider = ({ children }) => {
     }
 
     fetchData();
-  }, []);
+  }, [isLoggedIn]);
 
   const login = async (loginData) => {
     try {
@@ -43,12 +45,13 @@ export const AuthContextProvider = ({ children }) => {
       });
 
       if (res.status === 200) {
-        navigate("/Home");
+        navigate("/dashboard/home");
         const setCookieHeader = res.headers["set-Cookie"];
         console.log("Set-Cookie Header:", setCookieHeader);
         setIsLoggedIn(true);
         setIsAdmin(res.data.isadmin);
         console.log(res.data.isadmin);
+        setUsername(res.data.name);
       }
 
       console.log(res);
@@ -71,7 +74,7 @@ export const AuthContextProvider = ({ children }) => {
   const values = { isLoggedIn, isAdmin, login, Username, logout };
 
   if (!isDataLoaded) {
-    return <div>Loading...</div>;
+    return <div>Loading...54321</div>;
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
