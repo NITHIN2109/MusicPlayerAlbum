@@ -55,12 +55,38 @@ exports.LoginUser = (Logindata, callback) => {
 };
 
 exports.getalbums = (callback) => {
-  let query = "select * from albums";
+  let query = `
+    SELECT a.*, 
+           GROUP_CONCAT(s.song_name) AS song_filenames,
+           GROUP_CONCAT(s.song_id) AS song_ids
+    FROM albums a
+    LEFT JOIN songs s ON a.id = s.album_id
+    GROUP BY a.id
+  `;
   db.query(query, (err, result) => {
     if (err) {
       callback(err, null);
+    } else {
+      const albumsWithSongs = result.map((album) => {
+        const song_filenames = album.song_filenames
+          ? album.song_filenames.split(",")
+          : [];
+        const song_ids = album.song_ids ? album.song_ids.split(",") : [];
+        const songs = song_filenames.map((song_filename, index) => ({
+          song_filename,
+          song_id: song_ids[index],
+        }));
+        return {
+          id: album.id,
+          title: album.title,
+          genre: album.genre,
+          artist: album.artist,
+          coverImage: album.coverImage,
+          releaseYear: album.releaseYear,
+          songs,
+        };
+      });
+      callback(null, albumsWithSongs);
     }
-    // console.log(result);
-    callback(null, result);
   });
 };

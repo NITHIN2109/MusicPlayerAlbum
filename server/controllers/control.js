@@ -1,17 +1,16 @@
 const db = require("../model/loginmodel");
+// const songdb = require("../model/songs");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 
 require("dotenv").config();
 exports.createuser = (req, res) => {
   const userdeatils = req.body;
-  // console.log(userdeatils);
   if (!userdeatils.Name || !userdeatils.Email || !userdeatils.Password) {
     return res.json({ Error: "Include all details" });
   }
   db.createuser(userdeatils, (result, err) => {
     if (err) {
-      // console.log(err);
       return res
         .status(500)
         .json({ Error: "Unable to register", details: err });
@@ -28,8 +27,6 @@ exports.LoginUser = (req, res) => {
   console.log(loginDetails);
   db.LoginUser(loginDetails, (err, result) => {
     if (err) {
-      // console.error(err);
-
       return res.status(500).json({ Error: "Internal Server Error" });
     } else if (result.Message === "Login Successfull") {
       const name = result[0].Name;
@@ -92,32 +89,74 @@ exports.sendImage = (req, res) => {
 exports.getalbums = (req, res) => {
   db.getalbums((err, output) => {
     if (err) {
-      // console.log(err);
       res.status(500).json("Internal server error");
     } else {
-      // console.log(output);
       res.status(200).send(output);
     }
   });
 };
 
-// const fs = require('fs');
-
 exports.playmusic = (req, res) => {
   const songName = req.params.songname;
   const filePath = `./songs/${songName}`;
-
-  const readstream = fs.createReadStream(filePath);
-
-  // Set the appropriate Content-Type header for the audio file
-  res.setHeader("Content-Type", "audio/mpeg");
-
-  // Pipe the read stream directly to the response object
-  readstream.pipe(res);
-
-  // Handle errors
-  readstream.on("error", (err) => {
-    console.error("Error streaming audio file:", err);
-    res.status(500).json({ error: "Error streaming audio file" });
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      console.error("Error reading audio file:", err);
+      return res.status(500).json({ error: "Error reading audio file" });
+    }
+    res.setHeader("Content-Type", "audio/mpeg");
+    res.send(data);
   });
 };
+
+const path = require("path");
+
+exports.songdownload = (req, res) => {
+  const songname = req.params.songid;
+  const filePath = path.join(__dirname, "../songs", songname);
+  console.log(filePath);
+  res.download(filePath, (err, result) => {
+    if (err) {
+      console.error("Error downloading file:", err);
+      res.status(500).send("Internal Server Error");
+    }
+    console.log(result);
+  });
+};
+
+// exports.likedSongs = (req, res) => {
+//   const userid = req.params.userId;
+//   songdb.likedSongs(userid, (err, songs) => {
+//     if (err) {
+//       res.status(500).json("Server Error");
+//       console.log(err);
+//     } else {
+//       res.status(200).json(songs);
+//     }
+//   });
+// };
+// exports.addLikedSong = (req, res) => {
+//   const { user_id, song_id } = req.body;
+
+//   songdb.addlikedsongs(user_id, song_id, (err, result) => {
+//     if (err) {
+//       console.error("Error adding liked song: ", err);
+//       res.status(500).json({ error: "Internal server error" });
+//       return;
+//     }
+//     res.status(201).json({ message: "Liked song added successfully" });
+//   });
+// };
+
+// exports.deleteLikedSong = (req, res) => {
+//   const { user_id, song_id } = req.body;
+
+//   songdb.deleteLikedSong(user_id, song_id, (err, result) => {
+//     if (err) {
+//       console.error("Error deleting liked song: ", err);
+//       res.status(500).json({ error: "Internal server error" });
+//       return;
+//     }
+//     res.status(200).json({ message: "Liked song deleted successfully" });
+//   });
+// };

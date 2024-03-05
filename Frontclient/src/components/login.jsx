@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/authcontext";
 import { useNavigate } from "react-router";
-
+import { Link } from "react-router-dom";
 function Login() {
   const [LoginData, setLoginData] = useState({
     Email: "",
@@ -24,12 +24,11 @@ function Login() {
     }
   };
   return (
-    <div className="login login-container ">
-      <div>
-        <h1> Login </h1>
+    <div className="login">
+      <div className=" login-container">
         <form onSubmit={handleSubmit} className="loginform">
+          <h1> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Login </h1>
           <label htmlFor="Email" className="lin">
-            {" "}
             Email address
           </label>
           <br />
@@ -61,8 +60,23 @@ function Login() {
             }
           />
           <br></br>
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          &nbsp;
           <button type="submit" className="btn-login">
             Login
+          </button>
+          <button className="btn-login">
+            <Link to="/signup" className="login-signup">
+              Signup
+            </Link>
+          </button>
+          <br></br>
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          &nbsp;
+          <button className="btn-login">
+            <Link to="/home" className="login-signup">
+              Return to home
+            </Link>
           </button>
         </form>
       </div>

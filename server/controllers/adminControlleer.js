@@ -1,4 +1,5 @@
 const db = require("../model/adminmodel");
+
 const path = require("path");
 exports.getsUsers = (req, res) => {
   db.getAllUser((result, err) => {
@@ -30,7 +31,7 @@ exports.updateUsers = (req, res) => {
           message: "Updated successfully",
           details: updeteUserdetails,
         });
-        // console.log(response);
+
         return;
       } else {
         return res.status(401).json({ message: "User not found" });
@@ -80,53 +81,35 @@ exports.deleteUser = (req, res) => {
 
 exports.addalbum = (req, res) => {
   let albumDetails = req.body;
-  const songs = req.files["song"]; // Get the array of uploaded song files
-
-  var { title, genre, rating, releaseYear, artist } = albumDetails;
-
-  if (!title || !genre || !artist || !releaseYear || !rating || !songs) {
+  const songs = req.files["song"];
+  var { title, genre, releaseYear, artist } = albumDetails;
+  if (!title || !genre || !artist || !releaseYear || !songs) {
     return res.json({
       error: "Provide complete Album Details and select at least one song",
     });
   }
-
   const imageurl = req.files["image"][0].filename;
-
-  // Add album details to the database
-  db.addAlbum(
-    title,
-    genre,
-    artist,
-    rating,
-    releaseYear,
-    imageurl,
-    (err, albumId) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).json({ message: "Internal server error" });
-      }
-
-      // Insert song details into the database
-      songs.forEach((song) => {
-        const songDetails = {
-          album_id: albumId,
-          song_id: song.filename,
-          song_name: song.originalname,
-          // Assuming filename as the song name
-        };
-        db.addSong(songDetails, (err) => {
-          if (err) {
-            console.log(err);
-            return res
-              .status(500)
-              .json({ message: "Error adding song details" });
-          }
-        });
-      });
-
-      res.status(201).json({ message: "Album and songs added successfully" });
+  db.addAlbum(title, genre, artist, releaseYear, imageurl, (err, albumId) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Internal server error" });
     }
-  );
+    songs.forEach((song) => {
+      const songDetails = {
+        album_id: albumId,
+        song_id: song.filename,
+        song_name: song.originalname,
+      };
+      db.addSong(songDetails, (err) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ message: "Error adding song details" });
+        }
+      });
+    });
+
+    res.status(201).json({ message: "Album and songs added successfully" });
+  });
 };
 
 exports.getsingleAlbum = (req, res) => {
@@ -142,13 +125,10 @@ exports.getsingleAlbum = (req, res) => {
 
 exports.updatealbum = (req, res) => {
   let id = req.params.albumId;
-  // console.log(req.params);
   let updatealbum = req.body;
-  // console.log(updatealbum);
   if (
     !updatealbum.title ||
     !updatealbum.genre ||
-    !updatealbum.rating ||
     !updatealbum.releaseYear ||
     !updatealbum.artist
   ) {
@@ -166,12 +146,11 @@ exports.updatealbum = (req, res) => {
 };
 
 exports.deletealbum = (req, res) => {
-  // console.log(req);
   let id = req.params.albumId;
   console.log(id);
-  db.deletealbum(id, (err, result) => {
+  db.deleteAlbum(id, (err, result) => {
     if (err) {
-      // console.log(err);
+      console.log(err);
       return res.status(500).json({ Message: "Internal server error " });
     }
     return res.status(200).json({ message: "Deleted Successful" });
@@ -186,5 +165,28 @@ exports.deleteSong = (req, res) => {
       return res.status(500).json({ message: "Internal server error" });
     }
     return res.status(200).json(result);
+  });
+};
+
+exports.addSong = (req, res) => {
+  const album_Id = req.params.albumId;
+  const songs = req.files["song"];
+
+  const songDetails = {
+    album_id: album_Id,
+    song_id: songs[0].filename,
+    song_name: songs[0].originalname.split(".mp3")[0],
+  };
+  console.log(songs);
+  db.addSong(songDetails, (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Error adding song details" });
+    } else {
+      return res.status(201).json({
+        songDetails: result,
+        message: "Added Song Successfully",
+      });
+    }
   });
 };

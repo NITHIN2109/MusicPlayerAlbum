@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import UserManagement from "./admin/usermanagemnet";
 import AlbumManagement from "./admin/albumManagement";
 import SingleAlbum from "./admin/singlealbum";
-import Home from "./home";
+
+import AdminHome from "./admin/adminhome";
 
 const Admindashboard = () => {
   const [users, setUsers] = useState([]);
@@ -21,17 +22,19 @@ const Admindashboard = () => {
   }, []);
 
   return (
-    <>
+    <div className="main_Container">
       <Routes>
-        <Route index element={<Home />} />
+        <Route path="/" element={<Navigate to="/home" />} />
+
+        <Route path="/home" element={<AdminHome />} />
         <Route
-          path="/usermanagement"
+          path="/user"
           element={<UserManagement users={users} setUsers={setUsers} />}
         />
-        <Route path="/albumManagement/*" element={<AlbumManagement />}></Route>
-        <Route path="albumManagement/:albumId" element={<SingleAlbum />} />
+        <Route path="/albums/*" element={<AlbumManagement />}></Route>
+        <Route path="album/:albumId" element={<SingleAlbum />} />
       </Routes>
-    </>
+    </div>
   );
 };
 
