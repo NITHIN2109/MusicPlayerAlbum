@@ -38,6 +38,30 @@ export const AuthContextProvider = ({ children }) => {
     fetchData();
   }, [isLoggedIn]);
 
+  // const login = async (loginData) => {
+  //   try {
+  //     const res = await axios.post("http://localhost:8080/Login", loginData, {
+  //       withCredentials: true,
+  //     });
+
+  //     if (res.status === 200) {
+  //       navigate("/dashboard/home");
+  //       const setCookieHeader = res.headers["set-Cookie"];
+  //       console.log("Set-Cookie Header:", setCookieHeader);
+  //       setIsLoggedIn(true);
+  //       setIsAdmin(res.data.isadmin);
+  //       console.log(res.data.isadmin);
+  //       setUsername(res.data.name);
+  //     }
+
+  //     console.log(res);
+  //     console.log(res.data.message);
+  //     alert(res.data.message);
+  //   } catch (err) {
+  //     if (err.response?.status === 500) console.log(err);
+  //     if (err.response?.status === 401) alert(err.response.data.message);
+  //   }
+  // };
   const login = async (loginData) => {
     try {
       const res = await axios.post("http://localhost:8080/Login", loginData, {
@@ -56,10 +80,10 @@ export const AuthContextProvider = ({ children }) => {
 
       console.log(res);
       console.log(res.data.message);
-      alert(res.data.message);
     } catch (err) {
-      if (err.response?.status === 500) console.log(err);
-      if (err.response?.status === 401) alert(err.response.data.message);
+      throw new Error(
+        err.response?.data?.message || "An error occurred during login"
+      );
     }
   };
 

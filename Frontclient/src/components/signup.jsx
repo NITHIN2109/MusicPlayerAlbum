@@ -1,105 +1,108 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import "./home.css";
 import axios from "axios";
+import "./Auth.css";
+
 function Signup() {
-  const [signUpData, setsignUpData] = useState({
+  const [signUpData, setSignUpData] = useState({
     Name: "",
     Email: "",
     Password: "",
   });
+  const [error, setError] = useState(null);
+
   const navigate = useNavigate();
-  const hanldeSubmit = async (e) => {
+
+  useEffect(() => {
+    // Additional logic can be added if needed
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(signUpData);
-    await axios
-      .post("http://localhost:8080/signUp", signUpData)
-      .then((res) => {
-        if (res.status === 201) {
-          navigate("/Login");
-        }
-        console.log(res);
-        console.log(res.data.message);
-        alert(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setsignUpData({
-      Name: "",
-      Email: "",
-      Password: "",
-    });
+
+    // Basic form validation
+    if (!signUpData.Name || !signUpData.Email || !signUpData.Password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/signUp",
+        signUpData
+      );
+      if (response.status === 201) {
+        navigate("/login");
+      }
+      alert(response.data.message);
+    } catch (error) {
+      console.error("Error during sign up:", error);
+      setError("Error during sign up. Please try again.");
+    }
   };
 
   return (
-    <div className="SignUp">
+    <div className="signup">
       <div className="signup-container">
-        <form onSubmit={hanldeSubmit} className="signupform">
-          <h1> Signup </h1>
-          <label htmlFor="signupFullname">Full Name</label>
-          <br />
-          <input
-            type="text"
-            className="form-control lin"
-            id="signupFullname"
-            placeholder="Name"
-            name="Name"
-            value={signUpData.Name}
-            onChange={(e) =>
-              setsignUpData({ ...signUpData, Name: e.target.value })
-            }
-          />
-          <br />
-          <label htmlFor="signupemail ">Email address</label>
-          <br />
-          <input
-            type="email"
-            className="form-control lin"
-            id="signupemail"
-            placeholder="name@example.com"
-            name="Email"
-            value={signUpData.Email}
-            onChange={(e) =>
-              setsignUpData({ ...signUpData, Email: e.target.value })
-            }
-          />
-          <br />
-          <label htmlFor="loginPassword ">Password</label>
-          <br />
-          <input
-            type="password"
-            className="form-control lin"
-            id="loginPassword"
-            placeholder="Password"
-            name="Password"
-            value={signUpData.Password}
-            onChange={(e) =>
-              setsignUpData({ ...signUpData, Password: e.target.value })
-            }
-          />
-          <br></br>
-          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-          &nbsp;
-          <button type="submit" className="btn-login">
-            Sign Up
-          </button>
-          <button type="submit" className="btn-login">
-            <Link to="/login" className="login-signup">
-              Login
-            </Link>
-          </button>
-          <br></br>
-          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-          &nbsp;
-          <button className="btn-login">
-            <Link to="/home" className="login-signup">
-              Return to home
-            </Link>
-          </button>
+        <form onSubmit={handleSubmit} className="signup-form">
+          <h1>Sign Up</h1>
+          {error && <span className="error-message">{error}</span>}
+          <div className="form-group">
+            <label htmlFor="signupFullname">Full Name</label>
+            <input
+              type="text"
+              id="signupFullname"
+              placeholder="Name"
+              value={signUpData.Name}
+              onChange={(e) =>
+                setSignUpData({ ...signUpData, Name: e.target.value })
+              }
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Email address</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="name@example.com"
+              value={signUpData.Email}
+              onChange={(e) =>
+                setSignUpData({ ...signUpData, Email: e.target.value })
+              }
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="Password">Password</label>
+            <input
+              type="password"
+              id="Password"
+              placeholder="Password"
+              value={signUpData.Password}
+              onChange={(e) =>
+                setSignUpData({ ...signUpData, Password: e.target.value })
+              }
+            />
+          </div>
+          <div className="form-actions">
+            <button type="submit" className="btn btn-primary">
+              Sign Up
+            </button>
+
+            <p className="helper-text">
+              Don't have an account?{" "}
+              <Link to="/login" className="login-link">
+                Login
+              </Link>
+              .
+            </p>
+          </div>
         </form>
+        <Link to="/home" className="go-back-link">
+          <button className="go-back-button">Back</button>
+        </Link>
       </div>
     </div>
   );
 }
+
 export default Signup;

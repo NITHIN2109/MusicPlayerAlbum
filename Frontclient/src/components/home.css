@@ -8,6 +8,7 @@
   padding: 50px;
   background-image: url("https://cdn.pixabay.com/photo/2023/02/16/03/43/music-player-7792956_640.jpg");
   background-size: cover;
+  background-position: center top;
   background-repeat: no-repeat;
 }
 
@@ -46,14 +47,13 @@
   padding: 15px 30px;
   border: none;
   border-radius: 5px;
-  font-family: "Lato", sans-serif;
   font-size: 1.2rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .action-button:hover {
-  background-color: #23c62b;
+  background-color: #196f1d;
 }
 
 @import "~@fortawesome/fontawesome-free/css/all.css";
@@ -63,33 +63,7 @@
   color: #eee; /* Adjust icon color to match your design */
   margin-right: 5px; /* Adjust spacing as needed */
 }
-.login-signup {
-  color: rgb(0, 0, 0);
-  background-color: white;
-}
-.login-container {
-  box-shadow: 0px 0px 20px -1px rgb(0, 0, 0);
-  background-color: transparent;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
-  z-index: 1;
-  border-radius: 10px;
-}
-.signup-container {
-  padding: 10px;
-  box-shadow: 0px 0px 20px -1px rgb(0, 0, 0);
-  background-color: transparent;
-  color: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60vh;
-  z-index: 1;
-  border-radius: 20px;
-}
+
 .welcome-container-home {
   width: 100%;
   height: 70vh;
@@ -107,4 +81,64 @@
   margin-bottom: 30px;
   font-weight: bolder;
   text-shadow: 1px 5px 3px #958a8a;
+}
+
+@media screen and (max-width: 1200px) {
+  .welcome-title {
+    font-size: 3rem;
+  }
+
+  .welcome-message {
+    font-size: 1.2rem;
+  }
+
+  .action-button {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .welcome-title {
+    font-size: 2.5rem;
+  }
+
+  .welcome-message {
+    font-size: 1rem;
+  }
+
+  .action-button {
+    font-size: 0.8rem;
+    padding: 8px 16px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .welcome-title {
+    font-size: 2rem;
+  }
+
+  .welcome-message {
+    font-size: 0.8rem;
+  }
+
+  .action-button {
+    font-size: 0.7rem;
+    padding: 6px 12px;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .welcome-title {
+    font-size: 1.5rem;
+  }
+
+  .welcome-message {
+    font-size: 0.6rem;
+  }
+
+  .action-button {
+    font-size: 0.5rem;
+    padding: 4px 8px;
+  }
 }

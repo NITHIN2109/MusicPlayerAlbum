@@ -63,9 +63,11 @@ function AlbumManagement() {
       </div>
       <div className="album-header">
         <h1>Album Management</h1>
-        <button onClick={toggleModal} className="btn-addalbum sin">
-          {showModal ? "Close" : "Add Album"}
-        </button>
+        {!showModal && (
+          <button onClick={toggleModal} className="btn-addalbum sin">
+            Add Album
+          </button>
+        )}
       </div>
       <div className="album-body">
         {albums ? (
